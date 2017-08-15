@@ -1,0 +1,38 @@
+﻿@model IEnumerable<Chatter.Models.Chat>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+
+<div id="response"></div>
+<button id="getChats" class="btn btn-primary" onclick="getChats()">Get Chats</button>
+
+@section Scripts {
+    <script>
+       
+
+        //AJAX request using jQuery as a helper
+        //Notice this combines Razor syntax (@Url.Action()) in order to
+        //have the compiler figure out the exact path of the controller,
+        //alongside of jQuery.
+        function getChats() {
+
+            $.get("@Url.Action("TestJson","Chats")", function (serverResponse) {
+                var jsonTest = JSON.parse(serverResponse);
+                console.log(jsonTest);
+                $("#response").text(jsonTest.firstName);
+            });
+        }
+
+
+
+    </script>
+}
+
+
