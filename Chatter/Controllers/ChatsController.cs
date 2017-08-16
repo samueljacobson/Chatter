@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Chatter.Models;
+using Newtonsoft.Json;
 
 namespace Chatter.Controllers
 {
