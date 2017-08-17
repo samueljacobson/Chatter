@@ -11,7 +11,7 @@
 </p>
 
 <div id="response"></div>
-<button id="getChats" class="btn btn-primary" onclick="getChats()">Get Chats</button>
+<button id="getChats" class="btn btn-primary" @*onclick="getChats()"*@>Get Chats</button>
 
 @section Scripts {
     <script>
@@ -21,16 +21,42 @@
         //Notice this combines Razor syntax (@Url.Action()) in order to
         //have the compiler figure out the exact path of the controller,
         //alongside of jQuery.
-        function getChats() {
+        $(document).ready(function () {
 
-            $.get("@Url.Action("TestJson","Chats")", function (serverResponse) {
-                var jsonTest = JSON.parse(serverResponse);
-                console.log(jsonTest);
-                $("#response").text(jsonTest.firstName);
-            });
+            $("#getChats").click(
+                function() {
+
+            //function getChats() {
+
+                    $.get("@Url.Action("TestJson","Chats")", function (serverResponse) {
+                        var jsonTest = JSON.parse(serverResponse);
+                        console.log(jsonTest);
+                        //$("#response").text(jsonTest.firstName);
+
+                        var ul = $("<ul>", { id: "messageList", "class": "bg-primary" });
+                        ul.click(function () { alert("ul was clicked!"); });
+                        $("#response").append(ul);
+
+                        $.each(jsonTest, function (inx, val) {
+                            var myBgClass = ["bg-info","bg-warning"];
+                            var li = $("<li>", { id: "li" + inx, "class": myBgClass[inx % 2] });
+                            li.text(val.Message);
+                            li.click(function () { alert("my index is " + inx); });
+                            li.text("[" + val.Timestamp + "] " + val.UserName + ": " + val.Message)
+                            ul.append(li); //similar to $("#messageList").append(li), but more
+                            //efficient b/c it doesn't need to query for the list
+                            //again.
+                        });
+
+                    })
+                }
+            );
+
+            $("#postChats").click(
+
+                );
         }
-
-
+        );
 
     </script>
 }

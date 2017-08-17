@@ -24,10 +24,27 @@ namespace Chatter.Controllers
 
         public JsonResult TestJson()
         {
-            string jsonTest = "{ \"firstName\": \"Bob\",\"lastName\": \"Sauce\", \"children\": [{\"firstName\": \"Barbie\", \"age\": 19 },{\"firstName\": \"Ron\", \"age\": null }] }";
+            //string jsonTest = "{ \"firstName\": \"Bob\",\"lastName\": \"Sauce\", \"children\": [{\"firstName\": \"Barbie\", \"age\": 19 },{\"firstName\": \"Ron\", \"age\": null }] }";
 
-                return Json(jsonTest, JsonRequestBehavior.AllowGet);
-            }
+            //return Json(jsonTest, JsonRequestBehavior.AllowGet);
+
+            var chats = from Chats in db.Chats
+                        orderby
+                        Chats.Timestamp descending
+                        select new
+                        {
+                            Chats.AspNetUser.UserName,
+                            Chats.Message
+                        };
+
+            //Next we serialize our data in the model to JSON(Newtonsoft //library at work). 
+            //FYI: the query isn’t run until you call the ToList() method.
+
+            var output = JsonConvert.SerializeObject(chats.ToList());
+
+            //Finally, we return Json to the view
+            return Json(output, JsonRequestBehavior.AllowGet);
+        }
 
 
         // GET: Chats/Details/5
@@ -61,6 +78,7 @@ namespace Chatter.Controllers
         {
             if (ModelState.IsValid)
             {
+                chat.Timestamp = DateTime.Now;
                 db.Chats.Add(chat);
                 db.SaveChanges();
                 return RedirectToAction("Index");
